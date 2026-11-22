@@ -1,7 +1,7 @@
 /**
  * Find if there is a pair of numbers that sum to a given target value.
  *
- * Time Complexity: (n-1)+(n-2)+...+1 = (n(n-1))/2 = O(n^2)
+ * Time Complexity: (n-1)+(n-2)+...+1+0 = (n(n-1))/2 = O(n^2)
  * Space Complexity: 1 = 1 = O(1)
  * Optimal Time Complexity: n+n+n = 3n = O(n)
  *

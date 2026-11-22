@@ -7,7 +7,7 @@ def has_pair_with_sum(numbers: List[Number], target_sum: Number) -> bool:
     """
     Find if there is a pair of numbers that sum to a target value.
 
-    Time Complexity: (n-1)+(n-2)+...+1 = (n(n-1))/2 = O(n^2)
+    Time Complexity: (n-1)+(n-2)+...+1+0 = (n(n-1))/2 = O(n^2)
     Space Complexity: 1 = 1 = O(1)
     Optimal time complexity: n+n+n = 3n = O(n)
     """
