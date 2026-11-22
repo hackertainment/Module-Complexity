@@ -9,9 +9,9 @@
  *   "product": 30 // 2 * 3 * 5
  * }
  *
- * Time Complexity:
- * Space Complexity:
- * Optimal Time Complexity:
+ * Time Complexity: n+n = 2n = O(n)
+ * Space Complexity: 1+1 = 2 = O(1)
+ * Optimal Time Complexity: O(n) because to find the sum (and product) of all elements, it must visit each number in the array at least once (or twice).
  *
  * @param {Array<number>} numbers - Numbers to process
  * @returns {Object} Object containing running total and product
