@@ -2,11 +2,9 @@ def count_letters(s: str) -> int:
     """
     count_letters returns the number of letters which only occur in upper case in the passed string.
     """
-    only_upper = set()
-    for letter in s:
-        if is_upper_case(letter):
-            if letter.lower() not in s:
-                only_upper.add(letter)
+    only_upper = set(s)-set("abcdefghijklmnopqrstuvwxyz")
+    for letter in (set(s)-set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")):
+        only_upper.discard(letter.upper())
     return len(only_upper)
 
 
