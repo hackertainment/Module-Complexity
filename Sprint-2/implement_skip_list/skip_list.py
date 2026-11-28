@@ -1,3 +1,4 @@
+import math
 import random
 from dataclasses import dataclass
 
@@ -13,47 +14,90 @@ class Node:
 # https://upload.wikimedia.org/wikipedia/commons/8/86/Skip_list.svg
 class SkipList:
     def __init__(self):
-        self.heads = [Node()]  # array of <__main__.Node object> with dummy head node
+        dummy = Node()
+        dummy.key = -math.inf
+        self.heads = [dummy]  # array of <__main__.Node object>
+        '''
+        p = None
+        dummy = Node()
+        dummy.key = -math.inf
+        dummy.below = self.heads[0]
+        self.heads[0].above = dummy
+        self.heads.append(dummy)
+        q = None
+        dummy = Node()
+        dummy.key = -math.inf
+        dummy.below = self.heads[1]
+        self.heads[1].above = dummy
+        self.heads.append(dummy)
+        r = None
+        for i in range(70, 0, -10):
+            node = Node()
+            node.key = i
+            node.next = p
+            if (p is not None):
+                p.prev = node
+            p = node
+            if (p.key==10 or p.key==30 or p.key==50 or p.key==70):
+                node = Node()
+                node.key = i
+                node.next = q
+                node.below = p
+                p.above = node
+                if (q is not None):
+                    q.prev = node
+                q = node
+            if (p.key==30 or p.key==50):
+                node = Node()
+                node.key = i
+                node.next = r
+                node.below = q
+                q.above = node
+                if (r is not None):
+                    r.prev = node
+                r = node
+        self.heads[0].next = p
+        self.heads[1].next = q
+        self.heads[2].next = r
+        '''
 
     def __str__(self):
         levels = []
         for i in range(0, len(self.heads)):
-            levels.append("None <- HEAD["+str(i)+"]DUMMY")
+            levels.append("None <- HEAD["+str(i)+"]:"+str(self.heads[i].key))
             p = self.heads[i].next
             while (p is not None):
-                levels[i] = levels[i]+" <=> "+str(p.key)
+                padding = "="*(levels[0].find("<=> "+str(p.key)+" ")-len(levels[i])) if i>0 else "="
+                levels[i] = levels[i]+" <"+padding+"> "+str(p.key)
                 p = p.next
-            levels[i] = levels[i]+" -> None"
+            padding = "-"*(levels[0].find("-> None")-len(levels[i])) if i>0 else "-"
+            levels[i] = levels[i]+" "+padding+"> None"
         return ("\n".join(reversed(levels)))
 
-    #def __contains__(self, key):
-    #    pass
+    def __contains__(self, key):
+        return (key==(self.search(key).key))
 
     def to_list(self):
         keys = []
-        if (len(self.heads)>0):
-            p = self.heads[0].next
-            while (p is not None):
-                keys.append(p.key)
-                p = p.next
+        p = self.heads[0].next
+        while (p is not None):
+            keys.append(p.key)
+            p = p.next
         return keys
 
-    """
-    Search(key)
-        p = top-left node in S
-        while (p.below != null) do        //Scan down
-            p = p.below
-            while (key >= p.next) do      //Scan forward
-                p = p.next
-        return p
-    """
     def search(self, key):
         level = len(self.heads)-1
         p = self.heads[level]
-        while (p.below is not None):
-            p = p.below
-            while ((p.next is not None) and (key>=p.next.key)):
-                p = p.next
+        while ((p.below is not None) or ((p.next is not None) and (key>=p.next.key))):  # while (not reaching bottom level) or (can still move right)
+            #print(p.key, end=" ")
+            if ((p.next is not None) and (key>=p.next.key)):  # if (next key is not INFINITY) and (k >= next key)
+                p = p.next                                    # then go next one right
+                #print(">", end=" ")
+            else:                                             # else go down one level
+                if (p.below is not None):
+                    p = p.below
+                    #print("v", end=" ")
+        #print()
         return p
 
     """
@@ -86,6 +130,10 @@ class SkipList:
                 self.heads.append(dummy)
                 dummy.below = self.heads[i-1]
                 self.heads[i-1].above = dummy
+                if (self.heads[i-1].next is not None):
+                    node = Node()
+                    node.key = self.heads[i-1].key
+                    node.left
             #while (p.above is None):
             #    p = p.prev
             #p = p.above
@@ -114,44 +162,22 @@ class SkipList:
     def delete(self, key):
         pass
 
-    '''
-    def push_head(self, char):
-        node = Node()
-        node.char = char
-        if (self.head is not None):
-            node.next = self.head
-            self.head.prev = node
-        self.head = node
-        if (self.tail is None):
-            self.tail = node
-        return node
-
-    def pop_tail(self):
-        tail = self.tail
-        self.remove(self.tail)
-        return tail.char if tail else None
-
-    def remove(self, node):
-        if (node is not None):
-            if (node.next is not None):
-                node.next.prev = node.prev
-            if (node.prev is not None):
-                node.prev.next = node.next
-            if (self.head is node):
-                self.head = node.next
-            if (self.tail is node):
-                self.tail = node.prev
-    '''
-
 
 if __name__ == "__main__":
     print(SkipList())
     print(SkipList().to_list())
+    '''
     print()
     sl = SkipList()
-    sl.insert(50)  # insert into empty list
-    sl.insert(90)  # insert at tail
-    sl.insert(70)  # insert at middle
-    sl.insert(30)  # insert at head
     print(sl.to_list())
     print(sl)
+    for i in range(5, 80, 5):
+        p = sl.search(i)
+        print("search", "key="+str(i), "found", "p="+str(p.key))
+    '''
+    #print()
+    #sl = SkipList()
+    #sl.insert(30)  # insert into empty list
+    #sl.insert(70)  # insert at tail
+    #sl.insert(50)  # insert at middle
+    #sl.insert(10)  # insert at head
